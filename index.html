@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laptop Stock Management</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Laptop Stock Management</h1>
+            <p class="subtitle">Dell & Lenovo Inventory System</p>
+        </header>
+
+        <div class="controls">
+            <button id="addNewBtn" class="btn btn-primary">+ Add New Laptop</button>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search laptops...">
+            </div>
+        </div>
+
+        <div class="inventory-table">
+            <table id="inventoryTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Brand</th>
+                        <th>Model Name</th>
+                        <th>Specs</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Barcode</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="inventoryBody">
+                </tbody>
+            </table>
+            <div id="emptyState" class="empty-state">
+                <p>No laptops in inventory. Click "Add New Laptop" to get started.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle">Add New Laptop</h2>
+            <form id="laptopForm">
+                <div class="form-group">
+                    <label for="brand">Brand:</label>
+                    <select id="brand" required>
+                        <option value="">Select Brand</option>
+                        <option value="Dell">Dell</option>
+                        <option value="Lenovo">Lenovo</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="modelName">Model Name:</label>
+                    <input type="text" id="modelName" required placeholder="e.g., ThinkPad X1 Carbon">
+                </div>
+                <div class="form-group">
+                    <label for="specs">Specifications:</label>
+                    <textarea id="specs" required placeholder="e.g., Intel i7, 16GB RAM, 512GB SSD, 14&quot; FHD"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="price">Price ($):</label>
+                    <input type="number" id="price" step="0.01" required placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label for="stock">Stock Quantity:</label>
+                    <input type="number" id="stock" required min="0" placeholder="0">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="barcodeModal" class="modal">
+        <div class="modal-content barcode-modal">
+            <span class="close barcode-close">&times;</span>
+            <h2>Print Barcode Label</h2>
+            <div id="barcodePrintArea" class="barcode-print-area">
+                <div class="barcode-label">
+                    <h3 id="barcodeLaptopName"></h3>
+                    <p id="barcodeLaptopBrand"></p>
+                    <svg id="barcodeDisplay"></svg>
+                    <p id="barcodeId" class="barcode-id"></p>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button id="printBarcodeBtn" class="btn btn-primary">Print Label</button>
+                <button class="btn btn-secondary barcode-close">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <span class="close detail-close">&times;</span>
+            <h2>Laptop Details</h2>
+            <div id="detailContent" class="detail-content"></div>
+            <div class="form-actions">
+                <button class="btn btn-secondary detail-close">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
