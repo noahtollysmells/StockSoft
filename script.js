@@ -129,8 +129,11 @@ function showBarcode(id) {
     document.getElementById('barcodeLaptopName').textContent = laptop.modelName;
     document.getElementById('barcodeLaptopBrand').textContent = laptop.brand;
     document.getElementById('barcodeId').textContent = laptop.id;
+
+    // ✅ Generate barcode that encodes the GitHub Pages URL
+    const barcodeUrl = `https://noahtollysmells.github.io/StockSoft/details.html?id=${laptop.id}`;
     
-    JsBarcode("#barcodeDisplay", laptop.id, {
+    JsBarcode("#barcodeDisplay", barcodeUrl, {
         format: "CODE128",
         width: 2,
         height: 60,
@@ -171,7 +174,6 @@ function renderInventory(searchTerm = '') {
 
     emptyState.classList.remove('show');
 
-    // ✅ Each barcode now links to details.html?id=LAPxxxx
     inventoryBody.innerHTML = filtered.map(laptop => `
         <tr>
             <td><strong>${laptop.id}</strong></td>
@@ -181,7 +183,7 @@ function renderInventory(searchTerm = '') {
             <td>$${laptop.price.toFixed(2)}</td>
             <td><span class="stock-badge ${getStockClass(laptop.stock)}">${getStockText(laptop.stock)}</span></td>
             <td class="barcode-cell">
-                <a href="details.html?id=${laptop.id}" title="View details of ${laptop.modelName}">
+                <a href="https://noahtollysmells.github.io/StockSoft/details.html?id=${laptop.id}" target="_blank">
                     <svg id="barcode-${laptop.id}"></svg>
                 </a>
             </td>
@@ -193,9 +195,11 @@ function renderInventory(searchTerm = '') {
         </tr>
     `).join('');
 
+    // ✅ Barcode on-screen also encodes the GitHub Pages link
     filtered.forEach(laptop => {
+        const barcodeUrl = `https://noahtollysmells.github.io/StockSoft/details.html?id=${laptop.id}`;
         try {
-            JsBarcode(`#barcode-${laptop.id}`, laptop.id, {
+            JsBarcode(`#barcode-${laptop.id}`, barcodeUrl, {
                 format: "CODE128",
                 width: 1,
                 height: 40,
