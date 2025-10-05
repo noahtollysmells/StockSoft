@@ -1,6 +1,11 @@
+// =========================
+// Laptop Stock Management
+// =========================
+
 let laptops = [];
 let editingId = null;
 
+// --- DOM Elements ---
 const modal = document.getElementById('modal');
 const barcodeModal = document.getElementById('barcodeModal');
 const detailModal = document.getElementById('detailModal');
@@ -13,6 +18,7 @@ const modalTitle = document.getElementById('modalTitle');
 const cancelBtn = document.getElementById('cancelBtn');
 const printBarcodeBtn = document.getElementById('printBarcodeBtn');
 
+// --- Modal Close Buttons ---
 document.querySelectorAll('.close').forEach(btn => {
     btn.addEventListener('click', closeModals);
 });
@@ -35,6 +41,7 @@ window.addEventListener('click', (e) => {
     if (e.target === detailModal) detailModal.classList.remove('show');
 });
 
+// --- Button Listeners ---
 addNewBtn.addEventListener('click', () => {
     editingId = null;
     modalTitle.textContent = 'Add New Laptop';
@@ -57,6 +64,7 @@ printBarcodeBtn.addEventListener('click', () => {
     window.print();
 });
 
+// --- Utility Functions ---
 function closeModals() {
     modal.classList.remove('show');
 }
@@ -65,6 +73,7 @@ function generateId() {
     return 'LAP' + Date.now().toString().slice(-8);
 }
 
+// --- Core Logic ---
 function saveLaptop() {
     const laptop = {
         id: editingId || generateId(),
@@ -112,6 +121,7 @@ function deleteLaptop(id) {
     }
 }
 
+// --- Barcode Modal ---
 function showBarcode(id) {
     const laptop = laptops.find(l => l.id === id);
     if (!laptop) return;
@@ -130,23 +140,7 @@ function showBarcode(id) {
     barcodeModal.classList.add('show');
 }
 
-function showDetail(id) {
-    const laptop = laptops.find(l => l.id === id);
-    if (!laptop) return;
-
-    const detailContent = document.getElementById('detailContent');
-    detailContent.innerHTML = `
-        <p><strong>ID:</strong> ${laptop.id}</p>
-        <p><strong>Brand:</strong> ${laptop.brand}</p>
-        <p><strong>Model:</strong> ${laptop.modelName}</p>
-        <p><strong>Specifications:</strong> ${laptop.specs}</p>
-        <p><strong>Price:</strong> $${laptop.price.toFixed(2)}</p>
-        <p><strong>Stock:</strong> ${laptop.stock} units</p>
-    `;
-    
-    detailModal.classList.add('show');
-}
-
+// --- Render Table ---
 function getStockClass(stock) {
     if (stock === 0) return 'stock-out';
     if (stock <= 5) return 'stock-low';
@@ -177,6 +171,7 @@ function renderInventory(searchTerm = '') {
 
     emptyState.classList.remove('show');
 
+    // ✅ Each barcode now links to details.html?id=LAPxxxx
     inventoryBody.innerHTML = filtered.map(laptop => `
         <tr>
             <td><strong>${laptop.id}</strong></td>
@@ -185,8 +180,10 @@ function renderInventory(searchTerm = '') {
             <td>${laptop.specs}</td>
             <td>$${laptop.price.toFixed(2)}</td>
             <td><span class="stock-badge ${getStockClass(laptop.stock)}">${getStockText(laptop.stock)}</span></td>
-            <td class="barcode-cell" onclick="showDetail('${laptop.id}')">
-                <svg id="barcode-${laptop.id}"></svg>
+            <td class="barcode-cell">
+                <a href="details.html?id=${laptop.id}" title="View details of ${laptop.modelName}">
+                    <svg id="barcode-${laptop.id}"></svg>
+                </a>
             </td>
             <td>
                 <button class="btn btn-small btn-barcode" onclick="showBarcode('${laptop.id}')">Print</button>
@@ -211,6 +208,7 @@ function renderInventory(searchTerm = '') {
     });
 }
 
+// --- Local Storage ---
 function saveToLocalStorage() {
     localStorage.setItem('laptopInventory', JSON.stringify(laptops));
 }
@@ -225,4 +223,5 @@ function loadFromLocalStorage() {
     }
 }
 
+// --- Initialize ---
 loadFromLocalStorage();
