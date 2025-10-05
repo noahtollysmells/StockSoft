@@ -130,10 +130,10 @@ function showBarcode(id) {
     document.getElementById('barcodeLaptopBrand').textContent = laptop.brand;
     document.getElementById('barcodeId').textContent = laptop.id;
 
-    // ✅ Generate barcode that encodes the GitHub Pages URL
-    const barcodeUrl = `https://noahtollysmells.github.io/StockSoft/details.html?id=${laptop.id}`;
-    
-    JsBarcode("#barcodeDisplay", barcodeUrl, {
+    // ✅ Encode full product info into the barcode
+    const barcodeData = `${laptop.id} | ${laptop.brand} | ${laptop.modelName} | ${laptop.specs} | $${laptop.price.toFixed(2)} | ${laptop.stock} units`;
+
+    JsBarcode("#barcodeDisplay", barcodeData, {
         format: "CODE128",
         width: 2,
         height: 60,
@@ -182,10 +182,8 @@ function renderInventory(searchTerm = '') {
             <td>${laptop.specs}</td>
             <td>$${laptop.price.toFixed(2)}</td>
             <td><span class="stock-badge ${getStockClass(laptop.stock)}">${getStockText(laptop.stock)}</span></td>
-            <td class="barcode-cell">
-                <a href="https://noahtollysmells.github.io/StockSoft/details.html?id=${laptop.id}" target="_blank">
-                    <svg id="barcode-${laptop.id}"></svg>
-                </a>
+            <td class="barcode-cell" onclick="showBarcode('${laptop.id}')">
+                <svg id="barcode-${laptop.id}"></svg>
             </td>
             <td>
                 <button class="btn btn-small btn-barcode" onclick="showBarcode('${laptop.id}')">Print</button>
@@ -195,11 +193,11 @@ function renderInventory(searchTerm = '') {
         </tr>
     `).join('');
 
-    // ✅ Barcode on-screen also encodes the GitHub Pages link
+    // ✅ Each barcode on-screen also encodes product info (not a link)
     filtered.forEach(laptop => {
-        const barcodeUrl = `https://noahtollysmells.github.io/StockSoft/details.html?id=${laptop.id}`;
+        const barcodeData = `${laptop.id} | ${laptop.brand} | ${laptop.modelName} | ${laptop.specs} | $${laptop.price.toFixed(2)} | ${laptop.stock} units`;
         try {
-            JsBarcode(`#barcode-${laptop.id}`, barcodeUrl, {
+            JsBarcode(`#barcode-${laptop.id}`, barcodeData, {
                 format: "CODE128",
                 width: 1,
                 height: 40,
