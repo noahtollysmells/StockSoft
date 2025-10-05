@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laptop Details</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Laptop Details</h1>
+      <a href="index.html" class="btn btn-secondary">← Back to Inventory</a>
+    </header>
+
+    <div id="detailsContainer" class="details-container">
+      <p>Loading...</p>
+    </div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+    const detailsContainer = document.getElementById('detailsContainer');
+
+    if (!id) {
+      detailsContainer.innerHTML = "<p>❌ Invalid laptop ID.</p>";
+    } else {
+      const stored = localStorage.getItem('laptopInventory');
+      if (!stored) {
+        detailsContainer.innerHTML = "<p>⚠️ No inventory data found in this browser.</p>";
+      } else {
+        const laptops = JSON.parse(stored);
+        const laptop = laptops.find(l => l.id === id);
+        if (!laptop) {
+          detailsContainer.innerHTML = "<p>❌ Laptop not found.</p>";
+        } else {
+          detailsContainer.innerHTML = `
+            <h2>${laptop.modelName}</h2>
+            <p><strong>ID:</strong> ${laptop.id}</p>
+            <p><strong>Brand:</strong> ${laptop.brand}</p>
+            <p><strong>Specs:</strong> ${laptop.specs}</p>
+            <p><strong>Price:</strong> $${laptop.price.toFixed(2)}</p>
+            <p><strong>Stock:</strong> ${laptop.stock} units</p>
+            <svg id="barcodeDetails"></svg>
+          `;
+          JsBarcode("#barcodeDetails", laptop.id, {
+            format: "CODE128",
+            width: 2,
+            height: 60,
+            displayValue: true
+          });
+        }
+      }
+    }
+  </script>
+</body>
+</html>
